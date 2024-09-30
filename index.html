@@ -43,49 +43,53 @@
     </footer>
 
     <script>
-      document.getElementById('projectForm').addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const formData = new FormData(e.target);
-          const data = Object.fromEntries(formData.entries());
-  
-          const response = await fetch('/api/projects', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(data),
-          });
-  
-          if (response.ok) {
-              alert('Project submitted successfully!');
-              e.target.reset();
-              loadProjects(); // Reload projects after submission
-          } else {
-              alert('Error submitting project.');
-          }
-      });
-  
-      // Function to load projects from the server
-      async function loadProjects() {
-          const response = await fetch('/api/projects');
-          const projects = await response.json();
-          const projectList = document.getElementById('projectList');
-          projectList.innerHTML = ''; // Clear existing projects
-  
-          projects.forEach(project => {
-              const projectCard = document.createElement('div');
-              projectCard.className = 'bg-white p-4 rounded shadow';
-              projectCard.innerHTML = `
-                  <h3 class="font-bold">${project.title}</h3>
-                  <p class="text-gray-600">${project.description}</p>
-                  <a href="${project.githubRepo}" class="text-blue-500" target="_blank">View Project</a>
-              `;
-              projectList.appendChild(projectCard);
-          });
-      }
-  
-      // Load projects when the page loads
-      window.onload = loadProjects;
+        document.getElementById('projectForm').addEventListener('submit', async (e) => {
+       e.preventDefault();
+       const formData = new FormData(e.target);
+       const data = Object.fromEntries(formData.entries());
+
+       const response = await fetch('/api/projects', {
+           method: 'POST',
+           headers: {
+               'Content-Type': 'application/json',
+           },
+           body: JSON.stringify(data),
+       });
+
+       if (response.ok) {
+           alert('Project submitted successfully!');
+           e.target.reset();
+           loadProjects(); // Reload projects after submission
+       } else {
+           alert('Error submitting project.');
+       }
+   });
+
+   // Function to load projects from the server
+   async function loadProjects() {
+       const response = await fetch('/api/projects');
+       if (!response.ok) {
+           console.error('Failed to load projects:', response.statusText);
+           return;
+       }
+       const projects = await response.json();
+       const projectList = document.getElementById('projectList');
+       projectList.innerHTML = ''; // Clear existing projects
+
+       projects.forEach(project => {
+           const projectCard = document.createElement('div');
+           projectCard.className = 'bg-white p-4 rounded shadow';
+           projectCard.innerHTML = `
+               <h3 class="font-bold">${project.title}</h3>
+               <p class="text-gray-600">${project.description}</p>
+               <a href="${project.githubRepo}" class="text-blue-500" target="_blank">View Project</a>
+           `;
+           projectList.appendChild(projectCard);
+       });
+   }
+
+   // Load projects when the page loads
+   window.onload = loadProjects;
   </script>
 </body>
 </html>
